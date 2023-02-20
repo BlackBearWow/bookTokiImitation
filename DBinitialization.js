@@ -1,6 +1,6 @@
 const DB = require("./DB");
 
-DB.createCon();
+DB.createSysCon();
 DB.query(`drop database if exists bookTokiimitation;`);
 DB.query(`create database bookTokiimitation;`);
 DB.query(`use bookTokiimitation;`);
