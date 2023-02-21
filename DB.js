@@ -1,54 +1,71 @@
-const mysql = require('mysql');
+const mysql = require("mysql");
 
 class DB {
     static connection;
-    static createSysCon(){
+    static createSysCon() {
         this.connection = mysql.createConnection({
-            host: 'localhost',
+            host: "localhost",
             port: 3306,
-            user: 'root',
-            password: 'onlyroot',
-            database: 'sys'
+            user: "root",
+            password: "onlyroot",
+            database: "sys",
         });
-        this.connection.connect()
+        this.connection.connect();
+        console.log('DB sys로 커넥트 성공');
     }
-    static createCon(){
+    static createCon() {
         this.connection = mysql.createConnection({
-            host: 'localhost',
+            host: "localhost",
             port: 3306,
-            user: 'root',
-            password: 'onlyroot',
-            database: 'bookTokiimitation'
+            user: "root",
+            password: "onlyroot",
+            database: "bookTokiimitation",
         });
-        this.connection.connect()
+        this.connection.connect();
+        console.log('DB bookTokiimitation으로 커넥트 성공');
     }
     static query(sql) {
         this.connection.query(sql, function (error, results, fields) {
             if (error) throw error;
-            console.log('The result is: ', results);
+            console.log(`성공: ${sql}`);
         });
     }
-    static insertNovel(novelName, linkNum) {
-        this.query(`insert into novel(novelName, linkNum) values('${novelName}', ${linkNum})`);
-    }
-    static select(sql, callback) {
-        this.connection.query(sql, function (error, results, fields) {
-            if (error) throw error;
-            callback(results);
+    static insertNovelPromise(novelName, linkNum) {
+        return new Promise((resolve, reject) => {
+            this.isNovelExistPromise(novelName)
+                .then((data) => {
+                    //DB에 소설이 없다면 insert한다.
+                    if (data == 0){
+                        this.query(
+                            `insert into novel(novelName, linkNum) values('${novelName}', ${linkNum})`
+                        );
+                    }
+                    resolve('ok');
+                });
         });
     }
-    //여 기 서 막 힘
-    static async isNovelExist(novelName) {
-        let count;
-        await this.select(`select count(*) from novel where novelName = '${novelName}';`,
-        function(results){
-            count = results[0][`count(*)`];
+    static selectPromise(sql) {
+        return new Promise((resolve, reject) => {
+            this.connection.query(sql, function (error, results, fields) {
+                if (error) throw error;
+                //console.log(results);
+                resolve(results);
+            });
         });
-        return count;
-        //콜백함수가 비동기라서 그런지 count를 구할 수 가 없다. 도대체...
+    }
+    // DB에 소설이 몇개 있는지 확인한다.
+    static isNovelExistPromise(novelName) {
+        return new Promise((resolve, reject) => {
+            this.selectPromise(
+                `select count(*) from novel where novelName = '${novelName}';`
+            ).then((result) => {
+                resolve(result[0]["count(*)"]);
+            });
+        });
     }
     static endConnection() {
         this.connection.end();
+        console.log('DB end 성공')
     }
 }
 

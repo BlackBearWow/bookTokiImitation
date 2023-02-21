@@ -2,10 +2,11 @@ const axios = require("axios").default;
 const cheerio = require('cheerio');
 const DB = require("./DB");
 
-const url = "https://booktoki218.com/novel?book=%EC%9D%BC%EB%B0%98%EC%86%8C%EC%84%A4&sst=as_view&sod=desc";
+const bookTokiNum = '219';
+const url = "https://booktoki"+bookTokiNum+".com/novel?book=%EC%9D%BC%EB%B0%98%EC%86%8C%EC%84%A4&sst=as_view&sod=desc";
 //일반소설을 인기순으로 정렬
 const headers = {
-    'Host': 'booktoki218.com',
+    'Host': 'booktoki'+bookTokiNum+'.com',
     'Connection': 'keep-alive',
     'Cache-Control': 'max-age=0',
     'sec-ch-ua': '"Chromium";v="110", "Not A(Brand";v="24", "Microsoft Edge";v="110"',
@@ -36,9 +37,11 @@ axios({
         let $ = cheerio.load(data);
         let results = $('#webtoon-list-all > li');
         //결과물의 리스트를 받아옴
-        console.log(results.length);
+        console.log('읽어온 소설 개수:'+results.length);
         let maxCount = Math.min(10, results.length);
         //최대 10개까지의 정보를 받을 예정
+        let insertPromise = [];
+        //소설을 DB에 insert할 promise들을 담을 배열이다. 아래 Promise.all을 사용하여 insert되기 전에 DB가 end하는 것을 방지한다.
         if (maxCount > 0) {
             DB.createCon();
             results.each((idx, el) => {
@@ -46,19 +49,17 @@ axios({
                 if (idx >= maxCount) return;
                 let novelName = el.attributes.find((value) => { return value.name == 'date-title'; }).value;
                 //결과물(소설)의 이름
-                console.log(novelName);
                 let text = $(el).find('div > div > div > div > div').html();
                 let linkNumber = text.match(/(?<=https:\/\/booktoki[0-9]+.com\/novel\/)[0-9]+(?=\?)/gi)[0];
-                console.log(linkNumber);
+                console.log(`소설이름: ${novelName}, 소설번호: ${linkNumber}`);
                 /**결과물(소설)의 링크주소(숫자)
                 href="https://booktoki218.com/novel/108774?sst=as_view&amp;sod=desc&amp;book=%EC%9D%BC%EB%B0%98%EC%86%8C%EC%84%A4"
                 이런 식으로 결과가 나온다. 여기서 숫자만 추출한다.
                 */
-                console.log(DB.isNovelExist(novelName));
-                //여 기 서 막 힘
-                DB.insertNovel(novelName, linkNumber);
+                insertPromise.push(DB.insertNovelPromise(novelName, linkNumber));
             })
-            DB.endConnection();
+            Promise.all(insertPromise)
+            .then(()=>DB.endConnection());
         }
         //console.log(result[0].html());
     })
