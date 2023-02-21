@@ -12,5 +12,4 @@ DB.query(`create table novel(
 	specification varchar(500),
 	primary key(novel_id)
 )`);
-//DB.query();
 DB.endConnection();
