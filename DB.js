@@ -44,7 +44,18 @@ class DB {
                 });
         });
     }
-    static #selectPromise(sql) {
+    static insertContentPromise(novel_id, contentOrder, contentName, contentLinkNum) {
+        return new Promise((resolve, reject) => {
+            this.#isContentExistPromise(novel_id, contentOrder, contentName, contentLinkNum)
+            .then((data) => {
+                if (data == 0){
+                    this.query(`insert into content(novel_id, contentOrder, contentName, contentLinkNum) values(${novel_id}, ${contentOrder}, '${contentName}', ${contentLinkNum})`)
+                }
+                resolve('ok');
+            })
+        })
+    }
+    static selectPromise(sql) {
         return new Promise((resolve, reject) => {
             this.connection.query(sql, function (error, results, fields) {
                 if (error) throw error;
@@ -53,10 +64,17 @@ class DB {
             });
         });
     }
+    static #isContentExistPromise(novel_id, contentOrder, contentName, contentLinkNum) {
+        return new Promise((resolve, reject) => {
+            this.selectPromise(`select count(*) from content where novel_id = ${novel_id} and contentOrder = ${contentOrder} and contentName = '${contentName}' and contentLinkNum = ${contentLinkNum}`).then((result) => {
+                resolve(result[0]["count(*)"]);
+            })
+        })
+    }
     // DB에 소설이 몇개 있는지 확인한다.
     static #isNovelExistPromise(novelName) {
         return new Promise((resolve, reject) => {
-            this.#selectPromise(
+            this.selectPromise(
                 `select count(*) from novel where novelName = '${novelName}';`
             ).then((result) => {
                 resolve(result[0]["count(*)"]);

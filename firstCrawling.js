@@ -24,8 +24,8 @@ axios({
             results.each((idx, el) => {
                 //cheerio는 each라는 메소드로 여러 element들을 순환할 수 있게 지원한다.
                 if (idx >= maxCount) return;
-                let novelName = el.attributes.find((value) => { return value.name == 'date-title'; }).value;
-                //결과물(소설)의 이름
+                let novelName = $(el).attr('date-title').slice(0, 90);
+                //결과물(소설)의 이름. DB에 저장이 무리가지 않게 글자수를 제한둔다.
                 let text = $(el).find('div > div > div > div > div').html();
                 let linkNumber = text.match(/(?<=https:\/\/booktoki[0-9]+.com\/novel\/)[0-9]+(?=\?)/gi)[0];
                 console.log(`소설이름: ${novelName}, 소설번호: ${linkNumber}`);
