@@ -36,7 +36,6 @@ async function run() {
             insertPromise.push(DB.insertContentPromise(novels[i].novel_id, contentOrder, contentName, contentLinkNum));
         })
         await Promise.all(insertPromise)
-        //Promise.all(insertPromise)
     }
     DB.endConnection();    
 }
