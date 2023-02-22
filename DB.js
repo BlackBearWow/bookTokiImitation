@@ -30,6 +30,20 @@ class DB {
             console.log(`성공: ${sql}`);
         });
     }
+    static getNovelNamesPromise() {
+        return new Promise((resolve, reject) => {
+            this.selectPromise(`select novelName from novel`).then((result) => {
+                resolve(result);
+            })
+        })
+    }
+    static getContentNamesPromise(novelName) {
+        return new Promise((resolve, reject) => {
+            this.selectPromise(`select contentName from content where novel_id = (select novel_id from novel where novelName = '${novelName}');`).then((result) => {
+                resolve(result);
+            })
+        })
+    }
     static insertNovelPromise(novelName, linkNum) {
         return new Promise((resolve, reject) => {
             this.#isNovelExistPromise(novelName)

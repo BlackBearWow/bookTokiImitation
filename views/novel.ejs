@@ -12,8 +12,8 @@
     <link href='https://fonts.googleapis.com/css?family=Aldrich' rel='stylesheet'>
 
     <script>
-        function selectNovel(novelName) {
-            location.href = `novel?novelName=${novelName}`;
+        function selectContent(novelName, contentName) {
+            location.href = `view?novelName=${novelName}&contentName=${contentName}`;
         }
     </script>
 </head>
@@ -29,16 +29,12 @@
     <br>
 	<br>
     <div class="container p-3 my-3 bg-dark text-white">
-		<h4>소설 목록</h4>
+		<h4><%= novelName %> 목록</h4>
 		<ul class="list-group">
-            <% for(let i= 0; i<novels.length; i++) { %>
-                <li class="list-group-item list-group-item-action" onclick="selectNovel('<%=novels[i].novelName%>');"><a><%=novels[i].novelName%></a> <img src="" alt=''></li>
+            <% for(let i= 0; i<contents.length; i++) { %>
+                <li class="list-group-item list-group-item-action" onclick="selectContent('<%=novelName%>', '<%=contents[i].contentName%>');"><a><%=contents[i].contentName%></a> <img src="" alt=''></li>
             <% } %>
 		</ul>
 	</div>
-    <% for(let i= 0; i<novels.length; i++) { %>
-        <%= novels[i].novelName %>
-        <br>
-    <% } %>
 </body>
 </html>

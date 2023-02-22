@@ -1,6 +1,8 @@
 const express = require('express');
 const app = express();
-const ejs = require('ejs');
+const DB = require('./DB');
+const fs = require('fs');
+//const ejs = require('ejs');
 const port = 8888;
 
 app.set('views', __dirname + '/views');
@@ -11,14 +13,36 @@ app.listen(port, function(){
 });
 
 app.get('/', function(req, res){
-    const title = "이게 타이틀 입니다.";
-    res.render('index', {title, count:5});
+    DB.createCon();
+    DB.getNovelNamesPromise()
+    .then((novels)=>{
+        DB.endConnection();
+        res.render('index', {novels});    
+    })
 })
 
 app.get('/novel', function(req, res){
-    res.send('novel page');
+    const novelName = req.query.novelName;
+    DB.createCon();
+    DB.getContentNamesPromise(novelName)
+    .then((contents)=>{
+        DB.endConnection();
+        res.render('novel', {novelName, contents})
+    })
 })
 
 app.get('/view', function(req, res){
-    res.send('view page');
+    const novelName = req.query.novelName;
+    const contentName = req.query.contentName;
+    if(fs.existsSync(`contents/${novelName}/${contentName}.txt`)) {
+        const contents = fs.readFileSync(`contents/${novelName}/${contentName}.txt`, 'utf-8').split('\n');
+        res.render('view', {novelName, contentName, contents})
+    }
+    else {
+        res.send(`contents/${novelName}/${contentName}.txt 파일이 존재하지 않습니다`);
+    }
+})
+
+app.get('/test', function(req, res){
+    res.send('test page');
 })
