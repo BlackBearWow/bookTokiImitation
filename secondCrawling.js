@@ -10,13 +10,13 @@ const Constants = require("./crawlingConstants");
  */
 async function run() {
     DB.createCon();
-    let results = await DB.selectPromise('select * from novel;');
-    for(let i=0; i<results.length; i++) {
+    let novels = await DB.selectPromise('select * from novel;');
+    for(let i=0; i<novels.length; i++) {
         //if(i >= 2) continue;
         //일단 한 소설만 하자
         let response = await axios({
             method: "get", //post, get가능
-            url: Constants.listUrl(results[i].linkNum), //url을 넣으면 된다.
+            url: Constants.listUrl(novels[i].linkNum), //url을 넣으면 된다.
             headers: Constants.headers2
         })
         let $ = cheerio.load(response.data);
@@ -31,9 +31,9 @@ async function run() {
             //소설 링크 숫자.
             let contentName = $(el).find('div.wr-subject > a').html().replaceAll("\n","").replaceAll(/<span(.*?)<\/span>/gi,"").trim().slice(0, 90);
             //콘텐츠 이름
-            console.log(`novel_id: ${results[i].novel_id}, contentOrder: ${contentOrder}, 링크번호: ${contentLinkNum}, 콘텐트이름: ${contentName}`);
+            console.log(`novel_id: ${novels[i].novel_id}, contentOrder: ${contentOrder}, 링크번호: ${contentLinkNum}, 콘텐트이름: ${contentName}`);
             //이제 받아온 정보를 DB에 저장하자.
-            insertPromise.push(DB.insertContentPromise(results[i].novel_id, contentOrder, contentName, contentLinkNum));
+            insertPromise.push(DB.insertContentPromise(novels[i].novel_id, contentOrder, contentName, contentLinkNum));
         })
         await Promise.all(insertPromise)
         //Promise.all(insertPromise)

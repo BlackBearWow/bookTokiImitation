@@ -1,7 +1,14 @@
+const fs = require('fs');
 const axios = require("axios").default;
 const cheerio = require('cheerio');
 const DB = require("./DB");
 const Constants = require("./crawlingConstants");
+
+function mkdir(dirPath) {
+    if(!fs.existsSync(dirPath)) {
+        fs.mkdirSync(dirPath, {recursive: true});
+    }
+}
 
 axios({
     method: "get", //post, get가능
@@ -34,6 +41,8 @@ axios({
                 이런 식으로 결과가 나온다. 여기서 숫자만 추출한다.
                 */
                 insertPromise.push(DB.insertNovelPromise(novelName, linkNumber));
+                //디렉토리를 생성한다.
+                mkdir(`contents/${novelName}`);
             })
             Promise.all(insertPromise)
             .then(()=>DB.endConnection());
