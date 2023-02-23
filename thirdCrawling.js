@@ -19,8 +19,9 @@ async function thirdCrawling() {
         for (let j = 0; j < contents.length; j++) {
             await contentCrawlingAndMakeFilePromise(novels[i].novelName, contents[j].contentName, contents[j].contentLinkNum);
         }
+        console.log(`내용다운 끝: ${novels[i].novelName}`)
     }
-    DB.endConnection();
+    //DB.endConnection();
 }
 
 function contentCrawlingAndMakeFilePromise(novelName, contentName, contentLinkNum) {
@@ -34,6 +35,8 @@ function contentCrawlingAndMakeFilePromise(novelName, contentName, contentLinkNu
             }).then(function (response) {
                 let $ = cheerio.load(response.data);
                 let elements = $('#novel_content > div > p');
+                //p태그로 크롤링이 안된다면 div태그로 다시 크롤링 한다. 가끔 div태그로 되어있는 것들이 있다.
+                if (elements.length == 0) elements = $('#novel_content > div > div');
                 if (elements.length == 0) {
                     console.log(`생성실패: ${novelName}/${contentName}를 크롤링 할 수 업습니다`);
                 }
@@ -50,7 +53,7 @@ function contentCrawlingAndMakeFilePromise(novelName, contentName, contentLinkNu
             })
         }
         else {
-            console.log(`contents/${novelName}/${contentName}.txt 가 이미 있습니다.`);
+            //console.log(`contents/${novelName}/${contentName}.txt 가 이미 있습니다.`);
             resolve('file alreay exist');
         }
     });

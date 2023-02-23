@@ -17,7 +17,7 @@ app.get('/', function(req, res){
     DB.createCon();
     DB.getNovelNamesPromise()
     .then((novels)=>{
-        DB.endConnection();
+        //DB.endConnection();
         res.render('index', {novels});    
     })
 })
@@ -27,7 +27,7 @@ app.get('/novel', function(req, res){
     DB.createCon();
     DB.getContentNamesPromise(novelName)
     .then((contents)=>{
-        DB.endConnection();
+        //DB.endConnection();
         res.render('novel', {novelName, contents})
     })
 })
@@ -35,13 +35,17 @@ app.get('/novel', function(req, res){
 app.get('/view', function(req, res){
     const novelName = req.query.novelName;
     const contentName = req.query.contentName;
-    if(fs.existsSync(`contents/${novelName}/${contentName}.txt`)) {
-        const contents = fs.readFileSync(`contents/${novelName}/${contentName}.txt`, 'utf-8').split('\n');
-        res.render('view', {novelName, contentName, contents})
-    }
-    else {
-        res.send(`contents/${novelName}/${contentName}.txt 파일이 존재하지 않습니다`);
-    }
+    DB.getContentOrderAndCountPromise(novelName, contentName)
+    .then((data) => {
+        if(fs.existsSync(`contents/${novelName}/${contentName}.txt`)) {
+            const contents = fs.readFileSync(`contents/${novelName}/${contentName}.txt`, 'utf-8').split('\n');
+            res.render('view', {novelName, contentName, contents, contentOrder : data.contentOrder, count: data.count})
+        }
+        else {
+            const contents = [`contents/${novelName}/${contentName}.txt 파일이 존재하지 않습니다`]
+            res.render('view', {novelName, contentName, contents, contentOrder : data.contentOrder, count: data.count})
+        }
+    })
 })
 
 app.get('/test', function(req, res){

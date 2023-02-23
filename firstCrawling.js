@@ -43,8 +43,8 @@ async function firstCrawling() {
             //디렉토리를 생성한다.
             mkdir(`contents/${novelName}`);
         })
-        Promise.all(insertPromise)
-            .then(() => DB.endConnection());
+        await Promise.all(insertPromise)
+        //    .then(() => DB.endConnection());
     }
 }
 

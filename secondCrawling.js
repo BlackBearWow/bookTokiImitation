@@ -21,6 +21,10 @@ async function secondCrawling() {
         })
         let $ = cheerio.load(response.data);
         let elements = $('#serial-move > div > ul > li');
+        //let elements = $('ul.list-body > li');
+        if(elements.length == 0) {
+            console.log(`error: ${novels[i].novelName}을 크롤링하는데 읽히지 않습니다.`)
+        }
         let insertPromise = [];
         elements.each((idx, el)=>{
             //if(idx > 10) return;
@@ -29,15 +33,16 @@ async function secondCrawling() {
             //몇번째 소설인지 번호이다. 1번부터 시작한다.
             let contentLinkNum = $(el).find('div.wr-subject > a').attr('href').match(/(?<=https:\/\/booktoki[0-9]+.com\/novel\/)[0-9]+(?=\?)/gi)[0];
             //소설 링크 숫자.
-            let contentName = $(el).find('div.wr-subject > a').html().replaceAll("\n","").replaceAll(/<span(.*?)<\/span>/gi,"").trim().slice(0, 90);
-            //콘텐츠 이름
-            console.log(`novel_id: ${novels[i].novel_id}, contentOrder: ${contentOrder}, 링크번호: ${contentLinkNum}, 콘텐트이름: ${contentName}`);
+            let contentName = $(el).find('div.wr-subject > a').html().replaceAll("\n","").replaceAll(/<span(.*?)<\/span>/gi,"").trim().slice(0, 90).replaceAll(/[^가-힣0-9a-zA-Z ]/gi, '');
+            //콘텐츠 이름. 특수문자는 운영체제에서 파일 이름으로 저장 안될 수 있으니 숫자 영어 한글만 가능하게 한다.
+            //console.log(`novel_id: ${novels[i].novel_id}, contentOrder: ${contentOrder}, 링크번호: ${contentLinkNum}, 콘텐트이름: ${contentName}`);
             //이제 받아온 정보를 DB에 저장하자.
             insertPromise.push(DB.insertContentPromise(novels[i].novel_id, contentOrder, contentName, contentLinkNum));
         })
         await Promise.all(insertPromise)
+        console.log(`리스트 다운: ${novels[i].novelName}`);
     }
-    DB.endConnection();    
+    //DB.endConnection();    
 }
 
 module.exports = {secondCrawling}

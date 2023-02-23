@@ -39,8 +39,19 @@ class DB {
     }
     static getContentNamesPromise(novelName) {
         return new Promise((resolve, reject) => {
-            this.selectPromise(`select contentName from content where novel_id = (select novel_id from novel where novelName = '${novelName}');`).then((result) => {
+            this.selectPromise(`select contentOrder, contentName from content where novel_id = (select novel_id from novel where novelName = '${novelName}') order by contentOrder desc;`).then((result) => {
                 resolve(result);
+            })
+        })
+    }
+    static getContentOrderAndCountPromise(novelName, contentName) {
+        return new Promise((resolve, reject) => {
+            this.selectPromise(`select contentOrder from content where contentName like '%${contentName}%'`)
+            .then((result) => {
+                this.selectPromise(`select count(*) from content where novel_id = (select novel_id from novel where novelName like '%${novelName}%')`)
+                .then((result2) => {
+                    resolve({contentOrder: result[0].contentOrder, count: result2[0][`count(*)`]})
+                })
             })
         })
     }

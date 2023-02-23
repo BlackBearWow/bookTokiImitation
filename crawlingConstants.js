@@ -2,7 +2,7 @@ const bookTokiNum = '219'
 
 const Constants = {
     bookTokiNum,
-    novelNameListUrl : "https://booktoki"+bookTokiNum+".com/novel?book=%EC%9D%BC%EB%B0%98%EC%86%8C%EC%84%A4&sst=as_view&sod=desc",
+    novelNameListUrl : "https://booktoki"+bookTokiNum+".com/novel?sst=as_view&sod=desc",
     //일반소설을 인기순으로 정렬
     listUrl : function(num) {return "https://booktoki219.com/novel/"+num;},
     contentUrl : function(num) {return "https://booktoki219.com/novel/"+num;},

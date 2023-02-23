@@ -30,7 +30,7 @@
 	<br>
     <div class="container p-3 my-3 bg-dark text-white">
 		<h4><%= novelName %></h4>
-        <h5><%= contentName %></h5>
+        <h5><%= `${contentOrder}/${count} | ${contentName}` %></h5>
 		<ul class="list-group">
             <li class="list-group-item list-group-item-action">
                 <% for(let i= 0; i<contents.length; i++) { %>
@@ -38,7 +38,7 @@
                 <% } %>
             </li>
 		</ul>
-        <h5><%= contentName %></h5>
+        <h5><%= `${contentOrder}/${count} | ${contentName}` %></h5>
 	</div>
 </body>
 </html>
