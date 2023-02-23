@@ -8,7 +8,7 @@ const Constants = require("./crawlingConstants");
  각 novel의 linkNum에 맞는 페이지에 접속
  페이지에서 화수들을 크롤링하여 DB에 저장한다.
  */
-async function run() {
+async function secondCrawling() {
     DB.createCon();
     let novels = await DB.selectPromise('select * from novel;');
     for(let i=0; i<novels.length; i++) {
@@ -40,4 +40,4 @@ async function run() {
     DB.endConnection();    
 }
 
-run();
+module.exports = {secondCrawling}
