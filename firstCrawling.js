@@ -10,6 +10,13 @@ function mkdir(dirPath) {
     }
 }
 
+async function firstCrawling() {
+    let response = await axios({
+        method: "get", //post, get가능
+        url: Constants.novelNameListUrl, //url을 넣으면 된다.
+        headers: Constants.headers
+    })
+}
 axios({
     method: "get", //post, get가능
     url: Constants.novelNameListUrl, //url을 넣으면 된다.

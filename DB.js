@@ -11,7 +11,7 @@ class DB {
             database: "sys",
         });
         this.connection.connect();
-        console.log('DB sys로 커넥트 성공');
+        //console.log('DB sys로 커넥트 성공');
     }
     static createCon() {
         this.connection = mysql.createConnection({
@@ -22,7 +22,7 @@ class DB {
             database: "bookTokiimitation",
         });
         this.connection.connect();
-        console.log('DB bookTokiimitation으로 커넥트 성공');
+        //console.log('DB bookTokiimitation으로 커넥트 성공');
     }
     static query(sql) {
         this.connection.query(sql, function (error, results, fields) {

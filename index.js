@@ -1,9 +1,10 @@
 const express = require('express');
 const app = express();
-const DB = require('./DB');
 const fs = require('fs');
+const DB = require('./DB');
+const crawling = require('./crawling');
 //const ejs = require('ejs');
-const port = 8888;
+const port = 10101;
 
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
@@ -46,3 +47,6 @@ app.get('/view', function(req, res){
 app.get('/test', function(req, res){
     res.send('test page');
 })
+
+//크롤링 작업
+crawling.crawlingJob();
