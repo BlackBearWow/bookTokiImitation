@@ -21,7 +21,7 @@ async function firstCrawling() {
     let results = $('#webtoon-list-all > li');
     //결과물의 리스트를 받아옴
     console.log('읽어온 소설 개수:' + results.length);
-    let maxCount = Math.min(10, results.length);
+    let maxCount = Math.min(Constants.maxNumberOfNovel, results.length);
     //최대 10개까지의 정보를 받을 예정
     let insertPromise = [];
     //소설을 DB에 insert할 promise들을 담을 배열이다. 아래 Promise.all을 사용하여 insert되기 전에 DB가 end하는 것을 방지한다.
