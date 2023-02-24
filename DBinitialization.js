@@ -2,7 +2,7 @@ const DB = require("./DB");
 
 DB.createSysCon();
 DB.query(`drop database if exists bookTokiimitation;`);
-DB.query(`create database bookTokiimitation;`);
+DB.query(`create database bookTokiimitation CHARACTER SET utf8mb4 collate utf8mb4_general_ci;`);
 DB.query(`use bookTokiimitation;`);
 
 DB.query(`drop table if exists novel;`);
