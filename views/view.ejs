@@ -1,44 +1,99 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <title>짭 북토끼라네~</title>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <link href='https://fonts.googleapis.com/css?family=Aldrich' rel='stylesheet'>
 
     <script>
         function selectContent(novelName, contentName) {
             location.href = `view?novelName=${novelName}&contentName=${contentName}`;
         }
+        function beforeView(novelName, contentOrder, count) {
+            if (contentOrder == 1)
+                alert("이전화가 없습니다");
+            else
+                location.href = `/beforeView?novelName=${novelName}&contentOrder=${contentOrder}`;
+        }
+        function afterView(novelName, contentOrder, count) {
+            if (contentOrder == count)
+                alert("최종화입니다");
+            else
+                location.href = `/afterView?novelName=${novelName}&contentOrder=${contentOrder}`;
+        }
+        function toggleTouch() {
+            if ($('.toggleDiv').css('display') == 'block')
+                $('.toggleDiv').css('display', 'none');
+            else
+                $('.toggleDiv').css('display', 'block');
+        }
+        const toggleObject = {
+            flag: true,
+            touch: function () {
+                if (this.flag) {
+                    this.flag = false;
+                    $('.toggleDiv').css('display', 'none');
+                }
+                else {
+                    this.flag = true;
+                    $('.toggleDiv').css('display', 'block');
+                }
+            }
+        }
     </script>
 </head>
+
 <body>
     <nav class="navbar navbar-expand navbar-dark bg-dark fixed-top">
-		<a class="navbar-brand" href="/" target="_self">HOME</a>
-    	<ul class="navbar-nav mr-auto">
-    		<li class="nav-item">
-        		<a class="nav-link" href="/" target="_self">함함</a>
-    		</li>
-    	</ul>
-	</nav>
-    <br>
-	<br>
-    <div class="container p-3 my-3 bg-dark text-white">
-		<h4><%= novelName %></h4>
-        <h5><%= `${contentOrder}/${count} | ${contentName}` %></h5>
-		<ul class="list-group">
-            <li class="list-group-item list-group-item-action">
-                <% for(let i= 0; i<contents.length; i++) { %>
-                    <p><%=contents[i]%></p>
-                <% } %>
+        <a class="navbar-brand" href="/" target="_self">HOME</a>
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="/" target="_self">함함</a>
             </li>
-		</ul>
-        <h5><%= `${contentOrder}/${count} | ${contentName}` %></h5>
-	</div>
+        </ul>
+    </nav>
+    <br>
+    <br>
+    <div class="container p-3 my-3 bg-dark text-white" onclick="toggleTouch()">
+        <h4>
+            <%= novelName %>
+        </h4>
+        <h5>
+            <%= `${contentOrder}/${count} | ${contentName}` %>
+        </h5>
+        <ul class="list-group">
+            <li class="list-group-item list-group-item-action">
+                <% for(let i=0; i<contents.length; i++) { %>
+                    <p>
+                        <%=contents[i]%>
+                    </p>
+                    <% } %>
+            </li>
+        </ul>
+        <h5>
+            <%= `${contentOrder}/${count} | ${contentName}` %>
+        </h5>
+    </div>
+    <div class="toggleDiv">
+        <nav class="navbar navbar-dark bg-dark fixed-bottom">
+            <a class="navbar-text">
+                <%= `${novelName} ${contentOrder}/${count}` %>
+            </a>
+            <div>
+                <button type="button" class="btn btn-secondary btn-sm"
+                    onclick="beforeView('<%=novelName%>','<%=contentOrder%>','<%=count%>')">이전화</button>
+                <button type="button" class="btn btn-secondary btn-sm"
+                    onclick="afterView('<%=novelName%>','<%=contentOrder%>','<%=count%>')">다음화</button>
+            </div>
+        </nav>
+    </div>
 </body>
+
 </html>

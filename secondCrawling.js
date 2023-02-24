@@ -41,8 +41,15 @@ async function secondCrawling() {
         })
         await Promise.all(insertPromise)
         console.log(`리스트 다운: ${novels[i].novelName}`);
+        sleep(500);
     }
     //DB.endConnection();    
+}
+
+function sleep(ms) {
+    return new Promise((resolve, reject) => {
+        setTimeout(resolve, ms);
+    })
 }
 
 module.exports = {secondCrawling}

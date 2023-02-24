@@ -35,6 +35,7 @@ app.get('/novel', function(req, res){
 app.get('/view', function(req, res){
     const novelName = req.query.novelName;
     const contentName = req.query.contentName;
+    DB.createCon();
     DB.getContentOrderAndCountPromise(novelName, contentName)
     .then((data) => {
         if(fs.existsSync(`contents/${novelName}/${contentName}.txt`)) {
@@ -48,9 +49,29 @@ app.get('/view', function(req, res){
     })
 })
 
+app.get('/beforeView', function(req, res){
+    const novelName = req.query.novelName;
+    const contentOrder = Number(req.query.contentOrder) - 1;
+    DB.createCon();
+    DB.getContentNamePromise(novelName, contentOrder)
+    .then((data) => {
+        res.redirect(`/view?novelName=${novelName}&contentName=${data}`)
+    })
+})
+
+app.get('/afterView', function(req, res){
+    const novelName = req.query.novelName;
+    const contentOrder = Number(req.query.contentOrder) + 1;
+    DB.createCon();
+    DB.getContentNamePromise(novelName, contentOrder)
+    .then((data) => {
+        res.redirect(`/view?novelName=${novelName}&contentName=${data}`)
+    })
+})
+
 app.get('/test', function(req, res){
     res.send('test page');
 })
 
 //크롤링 작업
-crawling.crawlingJob();
+//crawling.crawlingJob();

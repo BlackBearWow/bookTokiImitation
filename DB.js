@@ -44,6 +44,13 @@ class DB {
             })
         })
     }
+    static getContentNamePromise(novelName, contentOrder) {
+        return new Promise((resolve, reject) => {
+            this.selectPromise(`select contentName from content where novel_id = (select novel_id from novel where novelName = '${novelName}') and contentOrder = ${contentOrder};`).then((result) => {
+                resolve(result[0].contentName);
+            })
+        })
+    }
     static getContentOrderAndCountPromise(novelName, contentName) {
         return new Promise((resolve, reject) => {
             this.selectPromise(`select contentOrder from content where contentName like '%${contentName}%'`)
