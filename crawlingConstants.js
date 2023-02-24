@@ -5,8 +5,8 @@ const Constants = {
     maxNumberOfNovel:10,
     novelNameListUrl : "https://booktoki"+bookTokiNum+".com/novel?book=%EC%9D%BC%EB%B0%98%EC%86%8C%EC%84%A4&sst=as_view&sod=desc",
     //일반소설을 인기순으로 정렬
-    listUrl : function(num) {return "https://booktoki219.com/novel/"+num;},
-    contentUrl : function(num) {return "https://booktoki219.com/novel/"+num;},
+    listUrl : function(num) {return `https://booktoki${bookTokiNum}.com/novel/`+num;},
+    contentUrl : function(num) {return `https://booktoki${bookTokiNum}.com/novel/`+num;},
     //화수를 보는 페이지와 내용을 보는 페이지 모두 num만 바꾸면 링크는 똑같다.
     headers : {
         'Host': 'booktoki'+bookTokiNum+'.com',
