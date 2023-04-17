@@ -20,12 +20,12 @@
         $(document).ready(function () {
             let tempSize = getCookie('fontSize');
             if(tempSize != null) {
-                fontSize = tempSize;
+                fontSize = Number(tempSize);
                 applyFontSize();
             }
             let tempFontWeight = getCookie('fontWeight');
             if(tempFontWeight != null) {
-                fontWeight = tempFontWeight;
+                fontWeight = Number(tempFontWeight);
                 $('#novelContent').css('font-weight', fontWeight);
             }
         });
