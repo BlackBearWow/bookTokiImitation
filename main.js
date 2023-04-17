@@ -74,4 +74,4 @@ app.get('/test', function(req, res){
 })
 
 //크롤링 작업
-//crawling.crawlingJob();
+crawling.crawlingJob();

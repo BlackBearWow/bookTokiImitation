@@ -13,6 +13,56 @@
     <link href='https://fonts.googleapis.com/css?family=Aldrich' rel='stylesheet'>
 
     <script>
+        let fontWeight = 400;
+        let fontSize = 100;
+        const minFontSize = 50;
+        const maxFontSize = 300;
+        $(document).ready(function () {
+            let tempSize = getCookie('fontSize');
+            if(tempSize != null) {
+                fontSize = tempSize;
+                applyFontSize();
+            }
+            let tempFontWeight = getCookie('fontWeight');
+            if(tempFontWeight != null) {
+                fontWeight = tempFontWeight;
+                $('#novelContent').css('font-weight', fontWeight);
+            }
+        });
+        function getCookie(name) {
+            let nameEQ = name + "=";
+            let ca = document.cookie.split(';');
+            for (let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+            }
+            return null;
+        }
+        function fontBigger() {
+            fontSize += 10;
+            if(fontSize > maxFontSize) fontSize = maxFontSize;
+            applyFontSize();
+        }
+        function fontSmaller() {
+            fontSize -= 10;
+            if(fontSize < minFontSize) fontSize = minFontSize;
+            applyFontSize();
+        }
+        function applyFontSize() {
+            document.cookie = `fontSize=${fontSize}`
+            $('#novelContent').css('fontSize', `${fontSize}%`)
+        }
+
+        function boldToggle() {
+            if(fontWeight == 400)
+                fontWeight = 700;
+            else
+                fontWeight = 400;
+            $('#novelContent').css('font-weight', fontWeight)
+            document.cookie = `fontWeight=${fontWeight}`
+        }
+
         function selectContent(novelName, contentName) {
             location.href = `view?novelName=${novelName}&contentName=${contentName}`;
         }
@@ -69,7 +119,7 @@
             <%= `${contentOrder}/${count} | ${contentName}` %>
         </h5>
         <ul class="list-group">
-            <li class="list-group-item list-group-item-action">
+            <li class="list-group-item list-group-item-action" id="novelContent">
                 <% for(let i=0; i<contents.length; i++) { %>
                     <p>
                         <%=contents[i]%>
@@ -87,6 +137,9 @@
                 <%= `${novelName} ${contentOrder}/${count}` %>
             </a>
             <div>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="boldToggle()">굵게</button>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="fontBigger()">폰트크게</button>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="fontSmaller()">폰트작게</button>
                 <button type="button" class="btn btn-secondary btn-sm"
                     onclick="beforeView('<%=novelName%>','<%=contentOrder%>','<%=count%>')">이전화</button>
                 <button type="button" class="btn btn-secondary btn-sm"
